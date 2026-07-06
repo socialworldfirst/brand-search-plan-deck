@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Search · The Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --wf-pink: #E6185F;
+    --wf-pink-dark: #B80F48;
+    --wf-pink-soft: #FEE6EF;
+    --ant-navy: #1A2C6B;
+    --ant-navy-deep: #0E1A4A;
+    --ant-navy-soft: #E8ECF7;
+    --orange: #FF6B35;
+
+    --cream: #FAF8F3;
+    --paper: #FFFFFF;
+    --line: #E0DBD0;
+    --line-soft: #EDE9DF;
+    --ink: #0E1A4A;
+    --ink-soft: #5A6482;
+    --muted: #8C93A8;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Progress */
+  .progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    background: rgba(230,24,95,0.08); z-index: 20;
+  }
+  .progress-bar {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--wf-pink), var(--orange));
+    transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Slide shell */
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transition: opacity 220ms ease;
+    overflow: hidden;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  /* Header strip */
+  .slide-head {
+    flex-shrink: 0;
+    height: 6vh;
+    min-height: 48px;
+    padding: 0 5vw;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .logo-mark img {
+    height: clamp(18px, 2.2vh, 26px);
+    width: auto;
+    display: block;
+  }
+  .head-meta {
+    display: flex; align-items: center; gap: 1rem;
+    font-size: clamp(0.68rem, 0.95vh, 0.78rem);
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .head-meta .sep { width: 1px; height: 12px; background: var(--line); }
+  .head-num {
+    color: var(--wf-pink);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Body — the redesigned core */
+  .slide-body {
+    flex: 1;
+    padding: 4vh 7vw 3vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .slide-body.v-center { justify-content: center; }
+  .slide-body.v-start { justify-content: flex-start; padding-top: 8vh; }
+
+  .column {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .column-narrow { max-width: 900px; }
+  .column-wide { max-width: 1180px; }
+
+  /* Footer strip */
+  .slide-foot {
+    flex-shrink: 0;
+    height: 4.5vh;
+    min-height: 34px;
+    padding: 0 5vw;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--line-soft);
+    font-size: clamp(0.62rem, 0.88vh, 0.72rem);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  /* Typography */
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: clamp(0.68rem, 1.05vh, 0.8rem);
+    font-weight: 600;
+    color: var(--wf-pink);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 2.2vh;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 28px; height: 1.5px;
+    background: var(--wf-pink);
+  }
+
+  h1.title {
+    font-size: clamp(3rem, 9vh, 6.5rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.0;
+    color: var(--ink);
+  }
+  h1.title em {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wf-pink);
+    letter-spacing: -0.01em;
+  }
+
+  h2.xl {
+    font-size: clamp(2.5rem, 7.2vh, 5.2rem);
+    font-weight: 700;
+    letter-spacing: -0.032em;
+    line-height: 1.02;
+    max-width: 18ch;
+    margin-bottom: 3vh;
+    color: var(--ink);
+  }
+  h2.lg {
+    font-size: clamp(1.9rem, 5.2vh, 3.6rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    max-width: 22ch;
+    margin-bottom: 2vh;
+    color: var(--ink);
+  }
+  h2 em {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wf-pink);
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    font-size: clamp(0.72rem, 1.1vh, 0.82rem);
+    font-weight: 600;
+    margin: 2.2vh 0 1vh;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* Body text */
+  p.lede {
+    font-size: clamp(1.1rem, 2.2vh, 1.4rem);
+    max-width: 56ch;
+    color: var(--ink);
+    line-height: 1.4;
+    font-weight: 400;
+    margin-bottom: 1.6vh;
+  }
+  p {
+    font-size: clamp(0.92rem, 1.7vh, 1.08rem);
+    max-width: 58ch;
+    color: var(--ink);
+    margin-bottom: 1.2vh;
+    line-height: 1.45;
+  }
+  p.fine {
+    font-size: clamp(0.82rem, 1.45vh, 0.95rem);
+    color: var(--ink-soft);
+    max-width: 60ch;
+    line-height: 1.5;
+  }
+
+  strong { font-weight: 600; color: var(--ink); }
+  .pink { color: var(--wf-pink); }
+  .pink-strong { color: var(--wf-pink); font-weight: 600; }
+
+  em.serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wf-pink);
+  }
+
+  /* Inline highlight — alternative to callout boxes */
+  .highlight {
+    display: inline-block;
+    position: relative;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .highlight::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 8px;
+    background: var(--wf-pink-soft);
+    z-index: -1;
+  }
+
+  /* ==========  TITLE SLIDE ========== */
+  .slide-title .slide-body {
+    justify-content: center;
+    padding: 4vh 8vw;
+    position: relative;
+  }
+  .title-deco {
+    position: absolute;
+    right: 5vw; top: 50%; transform: translateY(-50%);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(12rem, 40vh, 36rem);
+    line-height: 0.85;
+    color: var(--wf-pink);
+    opacity: 0.08;
+    font-weight: 400;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  .title-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+  }
+  .title-sub {
+    margin-top: 3.5vh;
+    font-size: clamp(0.95rem, 1.6vh, 1.1rem);
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    max-width: 52ch;
+    line-height: 1.4;
+  }
+  .title-meta {
+    margin-top: 6vh;
+    display: flex; align-items: center; gap: 1.5rem;
+    font-size: clamp(0.85rem, 1.4vh, 1rem);
+    letter-spacing: 0.02em;
+  }
+  .title-meta .author { font-weight: 600; color: var(--ink); }
+  .title-meta .date { color: var(--ink-soft); }
+  .title-meta .bar { width: 1px; height: 14px; background: var(--line); }
+
+  /* ==========  PULL QUOTE ========== */
+  /* Replaces callout boxes */
+  .pull-quote {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.15rem, 2vh, 1.45rem);
+    line-height: 1.35;
+    color: var(--ink);
+    max-width: 48ch;
+    padding: 2vh 0 0;
+    margin-top: 2.5vh;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .pull-quote::before {
+    content: '';
+    position: absolute;
+    left: 0; top: -1px;
+    width: 40px; height: 1.5px;
+    background: var(--wf-pink);
+  }
+  .pull-quote strong,
+  .pull-quote .pink-strong {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--wf-pink);
+  }
+
+  /* ==========  MARGINALIA NOTE ========== */
+  .note {
+    position: relative;
+    padding-left: 3rem;
+    margin-top: 2vh;
+    max-width: 58ch;
+  }
+  .note::before {
+    content: 'Note.';
+    position: absolute;
+    left: 0; top: 0.15em;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    color: var(--wf-pink);
+    font-size: clamp(1rem, 1.7vh, 1.2rem);
+  }
+  .note p, .note .note-text {
+    font-size: clamp(0.85rem, 1.5vh, 0.98rem);
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin: 0;
+  }
+  .note strong { color: var(--ink); }
+
+  /* ==========  BULLET LISTS ========== */
+  ul.bullets {
+    list-style: none;
+    margin: 1.5vh 0;
+    padding: 0;
+  }
+  ul.bullets li {
+    padding-left: 1.3rem;
+    position: relative;
+    font-size: clamp(0.92rem, 1.65vh, 1.05rem);
+    margin-bottom: 1vh;
+    line-height: 1.45;
+    max-width: 62ch;
+    color: var(--ink);
+  }
+  ul.bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.72em;
+    width: 8px; height: 1.5px;
+    background: var(--wf-pink);
+  }
+
+  ul.dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    list-style: none;
+    margin: 2vh 0;
+    padding: 0;
+  }
+  ul.dual li {
+    padding-top: 1.2vh;
+    border-top: 2px solid var(--wf-pink);
+    font-size: clamp(0.92rem, 1.6vh, 1.05rem);
+    line-height: 1.45;
+    color: var(--ink);
+  }
+  ul.dual li strong {
+    display: block;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.5vh;
+  }
+
+  /* ==========  STEP FLOW ========== */
+  ol.steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 3vh 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.8rem;
+  }
+  ol.steps li {
+    counter-increment: step;
+    border-top: 2px solid var(--wf-pink);
+    padding-top: 0.9rem;
+  }
+  ol.steps li::before {
+    content: "0" counter(step);
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--wf-pink);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+  ol.steps li strong {
+    display: block;
+    font-size: clamp(0.82rem, 1.4vh, 0.92rem);
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+  }
+  ol.steps li .desc {
+    font-size: clamp(0.72rem, 1.2vh, 0.82rem);
+    color: var(--ink-soft);
+    line-height: 1.35;
+    display: block;
+  }
+
+  /* ==========  MODELS (3-COL) ========== */
+  .models {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5vw;
+    margin-top: 3vh;
+  }
+  .model-card {
+    padding-top: 1.2vh;
+    border-top: 2px solid var(--wf-pink);
+  }
+  .model-label {
+    font-size: clamp(0.72rem, 1.15vh, 0.82rem);
+    font-weight: 600;
+    color: var(--wf-pink);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.8vh;
+    display: block;
+  }
+  .model-card p {
+    font-size: clamp(0.88rem, 1.55vh, 1rem);
+    line-height: 1.45;
+    color: var(--ink);
+    margin-bottom: 0;
+  }
+
+  /* ==========  TABLES ========== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.82rem, 1.5vh, 0.98rem);
+    margin: 2vh 0 0;
+  }
+  thead th {
+    text-align: left;
+    padding: 0.75rem 0.95rem;
+    font-weight: 600;
+    font-size: clamp(0.62rem, 1vh, 0.72rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  tbody td {
+    padding: 0.62rem 0.95rem;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink);
+    vertical-align: middle;
+    line-height: 1.3;
+  }
+  tbody tr:last-child td { border-bottom: 1.5px solid var(--ink); }
+  .t-compact tbody td { padding: 0.48rem 0.95rem; }
+  td.label { font-weight: 500; }
+
+  .yes {
+    color: var(--wf-pink);
+    font-weight: 600;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .yes::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--wf-pink);
+  }
+  .no {
+    color: var(--muted);
+    font-size: 0.92em;
+    font-weight: 400;
+  }
+  .no::before { content: '— '; color: var(--line); }
+
+  .tier {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .tier-1 { background: var(--wf-pink-soft); color: var(--wf-pink-dark); }
+  .tier-2 { background: #FFF1E8; color: #C75016; }
+  .tier-3 { background: var(--ant-navy-soft); color: var(--ant-navy); }
+  .tier-na { color: var(--muted); font-size: 0.85rem; }
+  .weight-heaviest { color: var(--wf-pink); font-weight: 600; }
+  .weight-heavy { color: var(--ink); font-weight: 500; }
+  .weight-medium { color: var(--ink-soft); }
+  .weight-light, .weight-op { color: var(--muted); font-size: 0.92em; }
+
+  /* Table slide — headline + intro + table stacked */
+  .table-header {
+    margin-bottom: 0.5vh;
+  }
+  .table-header p {
+    max-width: 72ch;
+  }
+
+  /* ==========  NORTH STAR HERO ========== */
+  .hero-kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 1vh;
+  }
+  .hero-kpi .num {
+    font-size: clamp(8rem, 26vh, 22rem);
+    font-weight: 700;
+    color: var(--wf-pink);
+    line-height: 0.85;
+    letter-spacing: -0.055em;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+  }
+  .hero-kpi .num .unit {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .hero-kpi .label {
+    font-size: clamp(0.82rem, 1.3vh, 0.95rem);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-top: 2vh;
+    font-weight: 600;
+  }
+  .hero-kpi .label .sep {
+    color: var(--wf-pink);
+    margin: 0 0.8rem;
+  }
+  .hero-kpi .context {
+    font-size: clamp(0.88rem, 1.55vh, 1rem);
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 2vh auto 0;
+    line-height: 1.5;
+  }
+
+  /* ==========  INLINE SPECIAL TREATMENTS ========== */
+  .underline-pink {
+    background-image: linear-gradient(transparent 62%, var(--wf-pink-soft) 62%);
+    padding: 0 2px;
+  }
+
+  .divider-pink {
+    width: 48px;
+    height: 2px;
+    background: var(--wf-pink);
+    margin: 2vh 0;
+  }
+
+  /* Keyboard hint */
+  .kbd-hint {
+    position: fixed;
+    bottom: 1vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+  body:hover .kbd-hint { opacity: 0.6; }
+  .kbd-hint kbd {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 0.6rem;
+    font-family: ui-monospace, Menlo, monospace;
+    margin: 0 2px;
+  }
+
+  /* Persistent nav (bottom right fixed) */
+  #persist-nav {
+    position: fixed;
+    bottom: 0.9vh;
+    right: 5vw;
+    display: flex; align-items: center; gap: 0.4rem;
+    z-index: 15;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+  }
+  #persist-nav button {
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    width: 24px; height: 24px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 120ms, color 120ms;
+    font-family: inherit;
+  }
+  #persist-nav button:hover:not(:disabled) { background: var(--wf-pink-soft); color: var(--wf-pink); }
+  #persist-nav #counter {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-weight: 500;
+    min-width: 46px; text-align: center;
+    letter-spacing: 0.06em;
+  }
+
+  /* Print */
+  @media print {
+    html, body { overflow: visible; height: auto; }
+    body { background: #fff; }
+    .deck { height: auto; overflow: visible; }
+    .slide {
+      position: relative; inset: auto;
+      opacity: 1 !important; pointer-events: auto !important;
+      page-break-after: always; break-after: page;
+      height: 100vh; width: 100vw;
+    }
+    .progress, .kbd-hint, #persist-nav { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+
+  <!-- Slide 0: Title -->
+  <section class="slide slide-title active">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt="Ant International · WorldFirst"></div>
+      <div class="head-meta"><span>Internal</span><span class="sep"></span><span class="head-num">Jul 2026</span></div>
+    </div>
+    <div class="slide-body">
+      <div class="title-deco">name</div>
+      <div class="title-content">
+        <span class="eyebrow">Brand search · The plan</span>
+        <h1 class="title">Make more people<br><em>search our name.</em></h1>
+        <p class="title-sub">A simple plan to grow the number of people who type "WorldFirst" into Google. Built on our own data, tested against what worked and failed for our rivals.</p>
+        <div class="title-meta">
+          <span class="author">Steven Chen</span>
+          <span class="bar"></span>
+          <span class="date">July 2026</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 1: The problem -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>The problem</span><span class="sep"></span><span class="head-num">01</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">The problem</span>
+        <h2 class="xl">Few people search <em>our name.</em></h2>
+        <p class="lede">In the UK, about <strong>4,400 people a month</strong> type "worldfirst" into Google. Revolut gets <strong>301,000</strong>. Even Airwallex gets more than double our number.</p>
+        <p>Our goal is <span class="highlight">2 million brand views on Google this year</span>. Half the year is gone and we are at <strong class="pink">17%</strong>. This deck is the plan to change that, and to be honest about how fast it can change.</p>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 2: Money alone does not work -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>What we learned</span><span class="sep"></span><span class="head-num">02</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">What we learned</span>
+        <h2 class="xl">Ad money alone <em>cannot buy it.</em></h2>
+        <p class="lede">We did the maths on our own ad results, then had it checked three times. <strong>US$10,000 a month of boosting buys roughly 200 extra name searches.</strong> That is too small for anyone to see on a chart.</p>
+        <p>We already ran this experiment without meaning to: the UK got about <strong>US$40,000</strong> of boost money in the first half. The UK name-search line <span class="highlight">did not move.</span></p>
+        <div class="pull-quote">
+          Nobody in our category has ever bought a brand-search line with boosting. <span class="pink-strong">So the plan cannot be "spend more."</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 3: Why -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Why this happens</span><span class="sep"></span><span class="head-num">03</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">Why this happens</span>
+        <h2 class="lg">People search a name when they <em>remember</em> it and have a <em>reason.</em></h2>
+        <p>Four things must happen: a person <strong>sees us</strong> &rarr; <strong>remembers us</strong> &rarr; one day <strong>needs us</strong> &rarr; and <strong>types our name</strong> instead of a general phrase. Our data shows exactly which links are broken:</p>
+        <ul class="bullets">
+          <li><strong>Seeing us: works.</strong> 14 million ad views, 1.5 million video views in half a year.</li>
+          <li><strong>Remembering us: broken.</strong> Our videos are the most-watched per video in the whole field, but people remember the lesson and forget the teacher.</li>
+          <li><strong>Typing our name: broken.</strong> We say "good rates." So does everyone. When the need comes, people type "how to pay china supplier" and Google hands them to whoever ranks. Usually not us.</li>
+        </ul>
+        <div class="note">
+          <div class="note-text">Proof it is the message, not the market: in Chinese, <strong>万里汇 already means "the safe, official one"</strong> and people search it with zero ad money behind it. Same company. Same product. Different message. Different result.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 4: The plan at a glance -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>The plan</span><span class="sep"></span><span class="head-num">04</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">The plan · Four parts</span>
+        <h2 class="xl">Fix the broken links, <em>not the budget.</em></h2>
+        <ul class="dual">
+          <li><strong>1 · Say one clear thing</strong> One message only we can say. Something worth remembering and typing.</li>
+          <li><strong>2 · Say it in one place</strong> All effort on one market until the line moves. Not eight markets at once.</li>
+          <li><strong>3 · Make news people quote</strong> A quarterly WorldFirst index from our own data. News must say our name to use it.</li>
+          <li><strong>4 · Count it right</strong> Today we count 2 words and 1 website. We under-count our own brand.</li>
+        </ul>
+        <div class="pull-quote">
+          Parts 1 and 2 fix "remember us." Part 3 reaches people we cannot reach. Part 4 makes the scoreboard true. <span class="pink-strong">Boosting stays, but as the helper, not the plan.</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 5: Part 1 message -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Part 1 · The message</span><span class="sep"></span><span class="head-num">05</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">Part 1 · The message</span>
+        <h2 class="xl">Say the one thing <em>only we</em> can say.</h2>
+        <p class="lede">"WorldFirst is the official way to pay 1688 and China suppliers. The money arrives the same day. You cannot get scammed."</p>
+        <ul class="bullets">
+          <li>Wise cannot say it. Airwallex cannot say it. Payoneer cannot say it. <strong>We are part of the Ant family. It is simply true.</strong></li>
+          <li>The goal: when a seller thinks "I have to pay my China supplier," one name pops into their head. Ours.</li>
+          <li>"Good rates" gives nobody a reason to search. "The official 1688 payment company" does.</li>
+        </ul>
+        <div class="note">
+          <div class="note-text">This is not a slogan project. It is the same message repeated in every video, every ad, every post, for months, <strong>until the market can finish the sentence for us.</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 6: Part 2 one place -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Part 2 · One place first</span><span class="sep"></span><span class="head-num">06</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">Part 2 · One place first</span>
+        <h2 class="xl">One market. <em>Repeated.</em> Until it moves.</h2>
+        <p class="lede">Last month our boost money went to six regions at once. Split that thin, it is invisible everywhere. The same money in one market is loud enough to matter.</p>
+        <h3>Why the UK first</h3>
+        <ul class="bullets">
+          <li>It is our biggest name-search base outside China (4,400 a month).</li>
+          <li>The gap to Airwallex and Payoneer there is about 3x. Everywhere else it is 10x to 100x. <strong>The UK is the only market where the gap can close.</strong></li>
+          <li>It is the exact line leadership already tracks.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 7: Part 3 index -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Part 3 · Make news</span><span class="sep"></span><span class="head-num">07</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">Part 3 · Make news</span>
+        <h2 class="xl">Publish news that must <em>say our name.</em></h2>
+        <p class="lede">The <strong>WorldFirst Trade Index</strong>: every quarter, we publish what small sellers are really paying and buying across borders, from our own payment data. No rival can copy it, because no rival has our data.</p>
+        <ul class="bullets">
+          <li>A news story cannot quote the number without saying "WorldFirst." Every quote is free brand exposure with trust attached.</li>
+          <li>Press carries it to millions of people our own channels will never reach.</li>
+          <li>Every big search jump we found in a year of rival data came from <strong>news</strong>. None came from posts. Airwallex's best week all year was a funding story.</li>
+          <li>We cannot make funding news (Ant owns us). An index is news <strong>we can make ourselves, on schedule.</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 8: Part 4 counting -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Part 4 · Count it right</span><span class="sep"></span><span class="head-num">08</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">Part 4 · Count it right</span>
+        <h2 class="xl">Our scoreboard <em>under-counts</em> us.</h2>
+        <p class="lede">Today the goal is tracked on two search words and one website. But a lot of our brand searching happens where that tracker cannot see:</p>
+        <ul class="bullets">
+          <li>Chinese searchers click our own China site (<strong>worldfirst.com.cn</strong>), our own Zhihu page, and partner pages. Those clicks are real, but they count as zero.</li>
+          <li>Google itself counts many more brand words than we do: spelling mistakes, product names, translations.</li>
+        </ul>
+        <div class="pull-quote">
+          The fix is free and takes days: add the China site to our Search Console and count the full brand word list. <span class="pink-strong">We are likely closer to the goal than the scoreboard says.</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 9: Bonus rails -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Bonus · Copy Pakistan</span><span class="sep"></span><span class="head-num">09</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">Bonus · Copy what already works</span>
+        <h2 class="xl">Where money flows, <em>searches follow.</em></h2>
+        <p class="lede">Pakistan searches our name more than almost anywhere, with <strong>zero ad money</strong>. Why? Because real people get paid through us there. The search is a side effect of the money flow.</p>
+        <ul class="bullets">
+          <li>Payoneer built its whole brand this way: it has been the way Upwork freelancers get paid for 15 years. People search what pays them.</li>
+          <li>Our move: deepen marketplace payout ties so more sellers <strong>must</strong> know our name, and use real local sellers as the faces of the brand, like Payoneer does in Bangladesh.</li>
+        </ul>
+        <div class="note">
+          <div class="note-text">This lever belongs to partnerships more than marketing, but it is the <strong>strongest long-term engine</strong> on this list, so it stays on the page.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 10: The test -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>The test</span><span class="sep"></span><span class="head-num">10</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">The test</span>
+        <h2 class="xl">Prove it in 3 months, <em>before</em> we bet a year.</h2>
+        <ul class="bullets">
+          <li><strong>Where:</strong> UK only. One compare market gets nothing, so we can tell signal from luck.</li>
+          <li><strong>How much:</strong> US$25,000&ndash;30,000 a month for 3 months. About US$90,000 total.</li>
+          <li><strong>What changes:</strong> the creative. The new one-clear-message ads versus our current teaching-style content.</li>
+          <li><strong>How we judge:</strong> one number only, name searches in the UK. Not views, not likes.</li>
+        </ul>
+        <div class="pull-quote">
+          If the line moves, we scale with confidence. If it does not, we stop and saved a year of brand spend. <span class="pink-strong">Either answer is worth US$90K.</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 11: Honest timeline -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>Honest timeline</span><span class="sep"></span><span class="head-num">11</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column" style="text-align: center;">
+        <span class="eyebrow" style="display: inline-flex;">The honest timeline</span>
+        <div class="hero-kpi">
+          <div class="num">2<span class="unit">years</span></div>
+          <div class="label">To a brand-search line <span class="sep">/</span> we are proud of</div>
+          <p class="context">Every brand that grew name searches took years, not quarters. A fair expectation: 1.5x to 2x in the UK over 18&ndash;24 months, with the first real signal readable after the 3-month test. Anyone promising 4x in a year is selling something.</p>
+        </div>
+        <div class="pull-quote" style="margin: 3vh auto 0; text-align: left; max-width: 56ch;">
+          <span class="pink-strong">Keep the 2M goal.</span> Move the deadline, fix the scoreboard, and judge this year on whether the line finally starts moving, not on whether it finishes.
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+  <!-- Slide 12: The ask -->
+  <section class="slide">
+    <div class="slide-head">
+      <div class="logo-mark"><img src="wf_logo.webp" alt=""></div>
+      <div class="head-meta"><span>The ask</span><span class="sep"></span><span class="head-num">12</span></div>
+    </div>
+    <div class="slide-body v-center">
+      <div class="column column-narrow">
+        <span class="eyebrow">The ask · Three decisions</span>
+        <h2 class="xl">Three yes/no <em>decisions.</em></h2>
+        <ul class="dual">
+          <li><strong>1 · Approve the UK test</strong> US$90K over 3 months, new message versus old content, judged on name searches alone.</li>
+          <li><strong>2 · Green-light the index</strong> One quarter to scope: what data we can publish, who builds it, which press partner launches it.</li>
+          <li><strong>3 · Fix the scoreboard now</strong> Add the China site, count the full brand word list. Free, done in days, no approval cost.</li>
+        </ul>
+        <div class="pull-quote">
+          The message gives people something to remember. One market makes it loud enough to stick. The index makes strangers say our name. <span class="pink-strong">That is how a search line moves.</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-foot">
+      <span>Brand Search Plan · Jul 2026</span>
+    </div>
+  </section>
+
+</div>
+
+<div class="kbd-hint">
+  <kbd>←</kbd> <kbd>→</kbd> navigate &middot; <kbd>F</kbd> fullscreen
+</div>
+
+<div id="persist-nav">
+  <button id="btn-prev" aria-label="Previous">←</button>
+  <span id="counter">01 / 13</span>
+  <button id="btn-next" aria-label="Next">→</button>
+</div>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const progressBar = document.getElementById('progress-bar');
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  let current = 0;
+  const total = slides.length;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function show(i) {
+    current = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
+    counter.textContent = pad(current + 1) + ' / ' + pad(total);
+    progressBar.style.width = ((current + 1) / total * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+    prevBtn.style.opacity = current === 0 ? '0.25' : '1';
+    nextBtn.style.opacity = current === total - 1 ? '0.25' : '1';
+    if (history.replaceState) {
+      history.replaceState(null, '', '#' + (current + 1));
+    }
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+      case 'PageDown':
+      case ' ':
+        e.preventDefault(); next(); break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+      case 'PageUp':
+        e.preventDefault(); prev(); break;
+      case 'Home': e.preventDefault(); show(0); break;
+      case 'End': e.preventDefault(); show(total - 1); break;
+      case 'f':
+      case 'F':
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+        break;
+    }
+  });
+
+  if (window.location.hash) {
+    const n = parseInt(window.location.hash.slice(1), 10);
+    if (!isNaN(n) && n >= 1 && n <= total) show(n - 1);
+  }
+
+  show(current);
+})();
+</script>
+</body>
+</html>
